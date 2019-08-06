@@ -1,18 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
-public class Room : MonoBehaviour
+[CreateAssetMenu(menuName = "TextAdventure/Room")]
+public class Room : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [TextArea]
+    public string description = null;
+    public string roomName = null;
+    public Exit[] exits;
 }

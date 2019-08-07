@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     private RoomNavigation _roomNavigation;
     private List<string> _interactionDescriptionsInRoom = new List<string>();
     private List<string> _actionLog = new List<string>();
+    private InteractableItems _interactableItems;
 
     public List<string> InteractionDescriptionsInRoom{
         get{ return _interactionDescriptionsInRoom; }
@@ -24,8 +25,13 @@ public class GameController : MonoBehaviour
         get{ return _inputActions; }
     }
 
+    public InteractableItems Items{
+        get{ return _interactableItems; }
+    }
+
     private void Awake()
     {
+        _interactableItems = GetComponent<InteractableItems>();
         _roomNavigation = GetComponent<RoomNavigation>();
     }
 
@@ -59,6 +65,18 @@ public class GameController : MonoBehaviour
     private void UnpackRoom()
     {
         Navigation.UnpackExitsInRoom();
+        PrepareObjectsToTakeOrExamine(Navigation.CurrentRoom);
+    }
+
+    private void PrepareObjectsToTakeOrExamine(Room currentRoom)
+    {
+        foreach (var interactableObject in currentRoom.interactableObjectsInRoom){
+            string descriptionNotInInventory = _interactableItems.GetObjectNotInInventory(currentRoom, interactableObject);
+            if (descriptionNotInInventory != null){
+                _interactionDescriptionsInRoom.Add(descriptionNotInInventory);
+            }
+        }
+        
     }
 
     private void ClearCollectionsForNewRoom()

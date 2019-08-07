@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _displayText = null;
+    [SerializeField] private InputAction[] _inputActions = null;
 
     private RoomNavigation _roomNavigation;
     private List<string> _interactionDescriptionsInRoom = new List<string>();
@@ -13,6 +14,14 @@ public class GameController : MonoBehaviour
 
     public List<string> InteractionDescriptionsInRoom{
         get{ return _interactionDescriptionsInRoom; }
+    }
+
+    public RoomNavigation Navigation{
+        get{ return _roomNavigation; }
+    }
+
+    public InputAction[] InputActions{
+        get{ return _inputActions; }
     }
 
     private void Awake()
@@ -33,10 +42,11 @@ public class GameController : MonoBehaviour
 
     public void DisplayRoomText()
     {
+        ClearCollectionsForNewRoom();
         UnpackRoom();
         
         var joinedInteractionDescriptions = string.Join("\n", _interactionDescriptionsInRoom.ToArray());
-        var combinedText = _roomNavigation.CurrentRoom.description + "\n" + joinedInteractionDescriptions;
+        var combinedText = Navigation.CurrentRoom.description + "\n" + joinedInteractionDescriptions;
         
         LogStringWithReturn(combinedText);
     }
@@ -48,6 +58,12 @@ public class GameController : MonoBehaviour
 
     private void UnpackRoom()
     {
-        _roomNavigation.UnpackExitsInRoom();
+        Navigation.UnpackExitsInRoom();
+    }
+
+    private void ClearCollectionsForNewRoom()
+    {
+        _interactionDescriptionsInRoom.Clear();
+        Navigation.ClearExits();
     }
 }
